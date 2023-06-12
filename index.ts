@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const port = process.env.PORT || 8005
+const port = process.env.PORT || 8001
 
 const app = createServer()
 

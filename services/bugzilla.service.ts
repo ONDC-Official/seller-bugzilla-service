@@ -18,7 +18,7 @@ class BugzillaBugService {
     this.updateBug = this.updateBug.bind(this)
   }
 
-  key = process.env.BUGZILLA_API_KEY || 'zFr25rrxpUFRNwqJRAphlKcytiFUq0nujOdV23h1	'
+  key = process.env.BUGZILLA_API_KEY || 'HOP2yNHnp4NURqPuVGxGdBeWdxFP9rVsRRv8qJQR'
   async addAttachments({ bugId, data }: { bugId: string; data: string }) {
     const attachmentRequest = new GetHttpRequest({
       url: `/rest/bug/${bugId}/attachment`,
@@ -212,6 +212,10 @@ class BugzillaBugService {
 
   async updateBug(req: Request, res: Response) {
     const complaint_actions_merged = [...req.body.action.complainant_actions, ...req.body.action.respondent_actions]
+    console.log(
+      '🚀 ~ file: bugzilla.service.ts:215 ~ BugzillaBugService ~ updateBug ~ complaint_actions_merged:',
+      complaint_actions_merged,
+    )
 
     const latestIssueAction = complaint_actions_merged.reduce((last, current) => {
       if (current.updated_at > last.updated_at) {
@@ -219,9 +223,14 @@ class BugzillaBugService {
       }
       return last
     })
+    console.log(
+      '🚀 ~ file: bugzilla.service.ts:226 ~ BugzillaBugService ~ latestIssueAction ~ latestIssueAction:',
+      latestIssueAction,
+    )
 
     try {
       const latestCommit = this.generateTheCommentFromObject(latestIssueAction)
+      console.log('🚀 ~ file: bugzilla.service.ts:233 ~ BugzillaBugService ~ updateBug ~ latestCommit:', latestCommit)
 
       const getInstance = new GetHttpRequest({
         url: `/rest/bug/${req.params.id}`,
@@ -231,6 +240,7 @@ class BugzillaBugService {
       })
 
       const response = await getInstance.send()
+      console.log('🚀 ~ file: bugzilla.service.ts:243 ~ BugzillaBugService ~ updateBug ~ response:', response)
 
       return res.status(200).json({ success: true, data: response?.data })
     } catch (error: any) {
@@ -261,8 +271,16 @@ class BugzillaBugService {
 
   generateTheCommentFromObject(item: any) {
     const keys = Object.keys(item)
+    console.log('🚀 ~ file: bugzilla.service.ts:274 ~ BugzillaBugService ~ generateTheCommentFromObject ~ keys:', keys)
 
-    switch (keys[0]) {
+    const itemCase = keys.some((value) => value === 'complainant_action') ? 'complainant_action' : 'respondent_action'
+
+    console.log(
+      '🚀 ~ file: bugzilla.service.ts:277 ~ BugzillaBugService ~ generateTheCommentFromObject ~ itemCase:',
+      itemCase,
+    )
+
+    switch (itemCase) {
       case 'complainant_action':
         return `\nAction Taken: ${item.complainant_action}\nAction Comment:  ${item.short_desc}\nAction Taken By: Complainant\nAction Taken At:  ${item.updated_at}`
       case 'respondent_action':
