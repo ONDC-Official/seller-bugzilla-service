@@ -64,8 +64,6 @@ class BugzillaBugService {
           .toLowerCase(),
       })
 
-      console.log('🚀 ~ file: bugzilla.service.ts:61 ~ BugzillaBugService ~ createBug ~ userResponse:', userResponse)
-
       if (!userResponse?.data?.users?.[0] || userResponse === undefined) {
         const userCreated = await userService.createUser({
           email: `${data.bpp_name
@@ -83,7 +81,6 @@ class BugzillaBugService {
             .trim()
             .toLowerCase(),
         })
-        console.log('🚀 ~ file: bugzilla.service.ts:80 ~ BugzillaBugService ~ createBug ~ userCreated:', userCreated)
       }
 
       const productResponse = await productService.getProduct({
@@ -212,10 +209,6 @@ class BugzillaBugService {
 
   async updateBug(req: Request, res: Response) {
     const complaint_actions_merged = [...req.body.action.complainant_actions, ...req.body.action.respondent_actions]
-    console.log(
-      '🚀 ~ file: bugzilla.service.ts:215 ~ BugzillaBugService ~ updateBug ~ complaint_actions_merged:',
-      complaint_actions_merged,
-    )
 
     const latestIssueAction = complaint_actions_merged.reduce((last, current) => {
       if (current.updated_at > last.updated_at) {
@@ -223,14 +216,9 @@ class BugzillaBugService {
       }
       return last
     })
-    console.log(
-      '🚀 ~ file: bugzilla.service.ts:226 ~ BugzillaBugService ~ latestIssueAction ~ latestIssueAction:',
-      latestIssueAction,
-    )
 
     try {
       const latestCommit = this.generateTheCommentFromObject(latestIssueAction)
-      console.log('🚀 ~ file: bugzilla.service.ts:233 ~ BugzillaBugService ~ updateBug ~ latestCommit:', latestCommit)
 
       const getInstance = new GetHttpRequest({
         url: `/rest/bug/${req.params.id}`,
@@ -240,7 +228,6 @@ class BugzillaBugService {
       })
 
       const response = await getInstance.send()
-      console.log('🚀 ~ file: bugzilla.service.ts:243 ~ BugzillaBugService ~ updateBug ~ response:', response)
 
       return res.status(200).json({ success: true, data: response?.data })
     } catch (error: any) {
@@ -271,14 +258,8 @@ class BugzillaBugService {
 
   generateTheCommentFromObject(item: any) {
     const keys = Object.keys(item)
-    console.log('🚀 ~ file: bugzilla.service.ts:274 ~ BugzillaBugService ~ generateTheCommentFromObject ~ keys:', keys)
 
     const itemCase = keys.some((value) => value === 'complainant_action') ? 'complainant_action' : 'respondent_action'
-
-    console.log(
-      '🚀 ~ file: bugzilla.service.ts:277 ~ BugzillaBugService ~ generateTheCommentFromObject ~ itemCase:',
-      itemCase,
-    )
 
     switch (itemCase) {
       case 'complainant_action':
