@@ -65,7 +65,7 @@ class BugzillaBugService {
       })
 
       if (!userResponse?.data?.users?.[0] || userResponse === undefined) {
-        const userCreated = await userService.createUser({
+        await userService.createUser({
           email: `${data.bpp_name
             .substring('https://'.length, data.bpp_name.length - '/protocol/v1'.length)
             .trim()
