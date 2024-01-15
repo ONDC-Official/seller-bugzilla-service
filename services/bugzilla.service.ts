@@ -6,7 +6,6 @@ import GetHttpRequest from '../utils/HttpRequest'
 import ProductService from './product.service'
 import UserService from './user.service'
 import ComponentService from './component.service'
-// import axios from 'axios'
 
 const productService = new ProductService()
 const userService = new UserService()

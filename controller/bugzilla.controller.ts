@@ -1,23 +1,23 @@
 import { Response, Request } from 'express'
-import BugzillaBugService from '../services/bugzilla.service'
+import MainService from '../services/main.service'
 
-const BugService = new BugzillaBugService()
+const BugService = new MainService()
 
 class BugsController {
   async createBug(req: Request, res: Response) {
-    const data = await BugService.createBug(req, res)
+    const data = await BugService.createIssue(req, res)
 
     return data
   }
 
   async getAllBug(req: Request, res: Response) {
-    const data = await BugService.getBug(req, res)
+    const data = await BugService.getIssue(req, res)
 
     return data
   }
 
   async updateBug(req: Request, res: Response) {
-    const data = await BugService.updateBug(req, res)
+    const data = await BugService.updateIssue(req, res)
 
     return data
   }

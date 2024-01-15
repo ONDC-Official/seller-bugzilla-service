@@ -1,4 +1,4 @@
-import { ICreateBug } from '../interfaces/Bugs'
+import { ICreateBug, ICreateTicket } from '../interfaces/Bugs'
 import Joi from 'joi'
 
 export function CreateBugSchemaValidator(bugObject: ICreateBug) {
@@ -10,6 +10,22 @@ export function CreateBugSchemaValidator(bugObject: ICreateBug) {
     bpp_name: Joi.string().required(),
     attachments: Joi.array().items(Joi.string()),
     action: Joi.object(),
+  })
+
+  const { error } = schema.validate(bugObject)
+
+  return error
+}
+
+export function CreateTicketSchemaValidator(bugObject: ICreateTicket) {
+  const schema = Joi.object({
+    subject: Joi.string().required(),
+    issue: Joi.string().required(),
+    owner: Joi.string().required(),
+    group: Joi.string().required(),
+    type: Joi.string().required(),
+    priority: Joi.string().required(),
+    product: Joi.string().required(),
   })
 
   const { error } = schema.validate(bugObject)
